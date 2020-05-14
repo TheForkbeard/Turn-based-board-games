@@ -25,6 +25,10 @@
         let stage = document.querySelector("#stage");
         let output = document.querySelector("#output");
 
+        // The ship displayed properly so now to get it moving
+        // Add a keyboard listener
+        window.addEventListener("keydown", keydownHandler, false);
+
         // the MAP 
         let map = 
             [
@@ -37,11 +41,26 @@
             ];
         // still a nested array but stacked so I can see how the map will sit
 
+        // Now that I have successfully managed to get the board to render with only a typo in the style sheet and realised I had missed speach marks for the 2d array display 
+        // Time to add the ship // keep it modular and check each stage.
+        
+        // The game objects map ie things that move
+        let gameObjects = [
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [4, 0, 0, 0, 0, 0]
+        ]
+
         // Map code // another once again if the constants convention is full capitals should these be const ??
         let WATER = 0;
         let ISLAND = 1;
         let PIRATE = 2;
         let HOME = 3;
+        // the ship added
+        let SHIP = 4;
 
         // The size of each cell
         let SIZE = 64;
@@ -50,7 +69,71 @@
         let ROWS = map.length;
         let COLUMNS = map[0].length;
 
+        // moving the ship arrow key codes
+        let UP = 38;
+        let DOWN = 40;
+        let RIGHT = 39;
+        let LEFT = 37;
+
+        // Adding the ships postion so it can be moved
+        let shipRow;
+        let shipColumn;
+        // start without values because a loop will figure out where the ship is
+        // an automatic way to set the ship's starting position
+        
+        for(let row = 0; row < ROWS; row++) {
+            for(let column = 0; column < COLUMNS; column++) {
+                if(gameObjects[row][column] === SHIP) {
+                    shipRow = row;
+                    shipColumn = column;
+                }
+            }
+        }
+
         render();
+
+        // the keydown handler that will move the ship
+        function keydownHandler(event) {
+            switch(event.keyCode) {
+                case UP: 
+                    // find out if the ships move will be in the field of play
+                    if(shipRow > 0) {
+                        //if it is, clear the ship's curret cell
+                        gameObjects[shipRow][shipColumn] = 0;
+                        
+                        // Subtract 1 from the ship's row to move it one row on the map
+                        shipRow --;
+
+                        // Apply the ship's new updated position to the array
+                        gameObjects[shipRow][shipColumn] = SHIP;                        
+                    }
+                break;
+                case DOWN: 
+                    if(shipRow < ROWS - 1) {
+                        gameObjects[shipRow][shipColumn] = 0;
+                        shipRow++;
+                        gameObjects[shipRow][shipColumn] = SHIP;
+                    }
+                break;
+                case LEFT:
+                    if(shipColumn > 0) {
+                        gameObjects[shipRow][shipColumn] = 0;
+                        shipColumn--;
+                        gameObjects[shipRow][shipColumn] = SHIP;
+                    }
+                break;
+                case RIGHT:
+                    if(shipColumn < COLUMNS - 1) {
+                        gameObjects[shipRow][shipColumn] = 0;
+                        shipColumn++;
+                        gameObjects[shipRow][shipColumn] = SHIP;
+                    }
+                break;
+            }
+
+            //render the moving parts
+            render();
+        }
 
         // now to functions
         function render() {
@@ -84,10 +167,16 @@
                         case HOME: cell.src = "assets/images/home.png";
                     }
 
+                    // Add the ship from the gameObjects array in a new switch
+                    switch(gameObjects[row][column]) {
+                        case SHIP: cell.src = "assets/images/ship.png";
+                        break;
+                    }
+
                     // Position the cell
                     cell.style.top = row * SIZE + "px";
                     cell.style.left = column * SIZE + "px";
-                    
+
                 }
             }
         }
