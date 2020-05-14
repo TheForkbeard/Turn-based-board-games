@@ -14,6 +14,85 @@
     <!-- Now to begin with the HTML elements-->
     
     <div id="stage"></div>
+    <p id="output" ></p>
+
+    <!-- Thats as much HTML as this should need !! -->
+    <!-- Now on to the javascript-->
+
+    <script>
+    
+        // get a referance to the stage and output, once again should this be littering the global?? must remember to ask
+        let stage = document.querySelector("#stage");
+        let output = document.querySelector("#output");
+
+        // the MAP 
+        let map = 
+            [
+                [0, 2, 0, 0, 0, 3],
+                [0, 0, 0, 1, 0, 0],
+                [0, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 2, 0],
+                [0, 2, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0, 0]
+            ];
+        // still a nested array but stacked so I can see how the map will sit
+
+        // Map code // another once again if the constants convention is full capitals should these be const ??
+        let WATER = 0;
+        let ISLAND = 1;
+        let PIRATE = 2;
+        let HOME = 3;
+
+        // The size of each cell
+        let SIZE = 64;
+
+        // The number of rows and columns, nice trick using the array length
+        let ROWS = map.length;
+        let COLUMNS = map[0].length;
+
+        render();
+
+        // now to functions
+        function render() {
+            //first clear the stage of img tag cells from the previous turn
+            if(stage.hasChildNodes()) {
+                for(let i = 0; i < ROWS * COLUMNS; i++) {
+                    stage.removeChild(stage.firstChild);
+                }
+            }
+
+            // Render the game by looping through the map arrays
+            for(let row = 0; row < ROWS; row++) {
+                for(let column = 0; column < COLUMNS; column++) {
+                    // Create an image tag called cell
+                    let cell = document.createElement("img");
+
+                    // Set it's css class to cell
+                    cell.setAttribute("class", "cell");
+
+                    // Add the img tag to the <div id="stage"> tag
+                    stage.appendChild(cell);
+
+                    // Find the correct image for this map cell
+                    switch(map[row][column]) {
+                        case WATER: cell.src = "assets/images/water.png";
+                        break;
+                        case ISLAND: cell.src = "assets/images/island.png";
+                        break;
+                        case PIRATE: cell.src = "assets/images/pirate.png";
+                        break;
+                        case HOME: cell.src = "assets/images/home.png";
+                    }
+
+                    // Position the cell
+                    cell.style.top = row * SIZE + "px";
+                    cell.style.left = column * SIZE + "px";
+                    
+                }
+            }
+        }
+
+    </script>
     
 </body>
 </html>
