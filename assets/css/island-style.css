@@ -1,0 +1,21 @@
+h1 {
+    color: green;
+}
+
+#stage {
+    position: relative;
+    width: 384px;
+    height: 384px;
+    background-image: url("../images/background.png");
+}
+
+.cell {
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 645px;
+}
+
+p {
+    width: 400px;
+}
