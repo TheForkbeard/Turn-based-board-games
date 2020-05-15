@@ -222,6 +222,41 @@
                         validDirections.push(RIGHT)
                     }
                 }
+            // The validDirections array now contains 0 to 4 directios that contain WATER cells.
+            // Which of those directions will the monster choose to move in?
+
+            // If a valid direction was found, randomly choose one of the possible directions and assign it to the direction variable.
+            if(validDirections.length !== 0) {
+                let randomNumber = Math.floor(Math.random() * validDirections.length);
+                direction = validDirections[randomNumber];
+            }
+
+            //move the monster in the chosen direction.
+            switch(direction) {
+                case UP:
+                    // Clear the monsters current cell
+                    gameObjects[monsterRow][monsterColumn] = 0;
+                    // Subtract 1 from the monster's row
+                    monsterRow--;
+                    // Apply the monster's new position to the array
+                    gameObjects[monsterRow][monsterColumn] = MONSTER;
+                    break;
+                case DOWN:
+                    gameObjects[monsterRow][monsterColumn] = 0;
+                    monsterRow++;
+                    gameObjects[monsterRow][monsterColumn] = MONSTER;
+                    break;
+                case LEFT:
+                    gameObjects[monsterRow][monsterColumn] = 0;
+                    monsterColumn--;
+                    gameObjects[monsterRow][monsterColumn] = MONSTER;
+                    break;
+                case RIGHT:
+                    gameObjects[monsterRow][monsterColumn] = 0;
+                    monsterColumn++;
+                    gameObjects[monsterRow][monsterColumn] = MONSTER;
+                    break;
+            }
         }
 
         // The ship and map are sorted so some interation with the features.
@@ -285,7 +320,8 @@
 
                 // Display the game message
                 gameMessage = "You made it home ALIVE! " + "Final Score: " + score;
-
+            } else if(gameObjects[shipRow][shipColumn] === MONSTER) {
+                gameMessage = "Your ship has been swallowed by a sea monster!";
             } else {
                 // Display the game message if the player has run out of food or gold
                 if(gold <= 0) {
