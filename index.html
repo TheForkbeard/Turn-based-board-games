@@ -45,9 +45,10 @@
         // Time to add the ship // keep it modular and check each stage.
         
         // The game objects map ie things that move
+        // After the Game elements are added the monster is added MONSTER = 5
         let gameObjects = [
             [0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0],
+            [0, 0, 5, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
@@ -61,6 +62,8 @@
         let HOME = 3;
         // the ship added
         let SHIP = 4;
+        // the Monster added
+        let MONSTER = 5
 
         // The size of each cell
         let SIZE = 64;
@@ -78,6 +81,9 @@
         // Adding the ships postion so it can be moved
         let shipRow;
         let shipColumn;
+        // adding the monster postion
+        let monsterRow;
+        let monsterColumn;
         // start without values because a loop will figure out where the ship is
         // an automatic way to set the ship's starting position
         
@@ -86,6 +92,11 @@
                 if(gameObjects[row][column] === SHIP) {
                     shipRow = row;
                     shipColumn = column;
+                }
+                // now locate the monster
+                if(gameObjects[row][column] === MONSTER) {
+                    monsterRow = row;
+                    monsterColumn = column;
                 }
             }
         }
@@ -154,6 +165,14 @@
                     break;
             }
 
+            // The monster is rendering so now to move it when the ship moves
+            moveMonster();
+
+            //and find out if the monster is touching the ship
+            if(gameObjects[shipRow][shipColumn] === MONSTER) {
+                endGame();
+            }
+
             // still in the keydownHandler function but before rendering, Subtract some food each turn.
             food--;
 
@@ -164,6 +183,45 @@
 
             //render the moving parts
             render();
+        }
+
+        // The move monster function goes after the ships movement but before game activity. (question what will happen if I put it further down the code??)
+        function moveMonster() {
+            // the 4 possible directions that the monster can move
+            let UP = 1;
+            let DOWN = 2;
+            let LEFT = 3;
+            let RIGHT = 4;
+                // An array to store the valid direction that the monster is allowed to move in
+                let validDirections = [];
+                //The final direction that the monster will move in
+                let direction = undefined;
+                // Find out what kinds of things are in the cells that surround the monster
+                // if the cells contain WATER, push the corresponding direction (UP, DOWN, LEFT, RIGHT) into the validDirections array
+                if(monsterRow > 0) {
+                    let thingAbove = map[monsterRow - 1][monsterColumn];
+                    if(thingAbove === WATER) {
+                        validDirections.push(UP)
+                    }
+                }
+                if(monsterRow < ROWS - 1) {
+                    let thingBelow = map[monsterRow + 1][monsterColumn];
+                    if(thingBelow === WATER) {
+                        validDirections.push(DOWN)
+                    }
+                }
+                if(monsterColumn > 0) {
+                    let thingToTheLeft = map[monsterRow][monsterColumn - 1];
+                    if(thingToTheLeft === WATER) {
+                        validDirections.push(LEFT)
+                    }
+                }
+                if(monsterColumn < COLUMNS - 1) {
+                    let thingToTheRight = map[monsterRow][monsterColumn + 1];
+                    if(thingToTheRight === WATER) {
+                        validDirections.push(RIGHT)
+                    }
+                }
         }
 
         // The ship and map are sorted so some interation with the features.
@@ -277,6 +335,9 @@
                     // Add the ship from the gameObjects array in a new switch
                     switch(gameObjects[row][column]) {
                         case SHIP: cell.src = "assets/images/ship.png";
+                        break;
+                        // the ship is already added so add the monster
+                        case MONSTER: cell.src = "assets/images/monster.png";
                         break;
                     }
 
